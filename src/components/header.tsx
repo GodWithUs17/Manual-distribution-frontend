@@ -46,7 +46,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input 
                 type="text" 
-                placeholder="Search APH manuals..." 
+                placeholder="Search by course code or title (e.g., AGE 301)..." 
                 className="w-full pl-10 pr-4 py-2.5 bg-lautech-cream border border-lautech-creamDark rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-lautech-gold/50 focus:border-lautech-gold transition-all" 
                 value={searchQuery} 
                 onChange={e => setSearchQuery(e.target.value)} />

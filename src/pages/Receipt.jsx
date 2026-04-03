@@ -82,30 +82,38 @@ export default function Receipt() {
     }
   };
 
-  const handleSharePDF = async () => {
-    if (isProcessing) return;
-    setIsProcessing(true);
-    try {
-      const pdf = await generatePDFObject();
-      const pdfBlob = pdf.output('blob');
-      const file = new File([pdfBlob], `LAUTECH_Receipt.pdf`, { type: 'application/pdf' });
 
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: 'LAUTECH Manual Receipt',
-          text: `Digital Receipt for ${receipt.manual}`,
-        });
-      } else {
-        pdf.save(`LAUTECH_Receipt.pdf`);
-        alert("Sharing not supported on this browser. File downloaded instead.");
-      }
-    } catch (err) {
-      console.error("Share failed", err);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+   const handleSharePDF = async () => {
+       if (isProcessing) return;
+       setIsProcessing(true);
+       
+       try {
+         const pdf = await generatePDFObject();
+         const pdfBlob = pdf.output('blob');
+         const file = new File([pdfBlob], `LAUTECH_Receipt.pdf`, { type: 'application/pdf' });
+   
+         // 1. Try to share the ACTUAL FILE (Works on Mobile PWA/Chrome/Safari)
+         if (navigator.canShare && navigator.canShare({ files: [file] })) {
+           await navigator.share({
+             files: [file],
+             title: 'LAUTECH Manual Receipt',
+             text: `Digital Receipt for ${receipt.manual}. Ref: ${reference}`,
+           });
+         } 
+         // 2. BACKUP: Open WhatsApp with just a message (No auto-download)
+         else {
+           const message = `Hello! I just purchased the ${receipt.manual} manual. My Reference is: ${reference}`;
+           const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+           
+           window.open(whatsappUrl, '_blank');
+         }
+       } catch (err) {
+         console.error("Share failed", err);
+       } finally {
+         setIsProcessing(false);
+       }
+     };
+
 
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
@@ -265,7 +273,7 @@ export default function Receipt() {
         <div className="mt-8 text-center pb-10">
           <p className="text-[10px] text-gray-400 mb-2 uppercase font-bold tracking-widest">Payment Issue?</p>
           <a 
-            href={`https://wa.me/2348123456789?text=Hello%20Support,%20I%20have%20an%20issue%20with%20my%20receipt.%20Ref:${reference}`}
+            href={`https://wa.me/2349022266417?text=Hello%20Support,%20I%20have%20an%20issue%20with%20my%20receipt.%20Ref:${reference}`}
             className="text-[#003366] font-bold text-xs underline underline-offset-4"
           >
             💬 Message Student Support

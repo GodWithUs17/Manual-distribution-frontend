@@ -203,7 +203,8 @@ import toast from "react-hot-toast";
 import SalesTab from "../components/SalesTab";
 import StaffTab from "../components/StaffTab";
 import ManualsTab from "../components/ManualsTab";
-import { Users, ShoppingCart, Menu, X, BookOpen, Activity, LogOut } from "lucide-react";
+import StaffScanner from "./StaffScanner";
+import { Users, ShoppingCart, Menu, X, BookOpen, Activity, QrCode, LogOut } from "lucide-react";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("sales");
@@ -343,6 +344,9 @@ export default function AdminDashboard() {
           <button onClick={() => switchTab("staff")} className={`flex items-center space-x-3 w-full p-4 rounded-xl transition-all duration-200 ${activeTab === "staff" ? "bg-[#fdfcf7] text-[#450a0a] shadow-xl scale-105" : "hover:bg-white/10 text-stone-300"}`}>
             <Users size={20} /> <span className="font-black text-xs uppercase tracking-widest">Staff</span>
           </button>
+          <button onClick={() => switchTab("scanner")} className={`flex items-center space-x-3 w-full p-4 rounded-xl transition-all duration-200 ${activeTab === "scanner" ? "bg-[#fdfcf7] text-[#450a0a] shadow-xl scale-105" : "hover:bg-white/10 text-stone-300"}`}>
+            <QrCode size={20} /> <span className="font-black text-xs uppercase tracking-widest">Scanner page</span>
+          </button>
         </nav>
 
         <div className="pt-6 border-t border-[#a16207]/30">
@@ -369,6 +373,7 @@ export default function AdminDashboard() {
                 {activeTab === "sales" && "Sales Analytics"}
                 {activeTab === "manuals" && "Inventory Management"}
                 {activeTab === "staff" && "Team Directory"}
+                {activeTab === "scanner" && "Staff Scanner"}
               </h1>
             </div>
           </div>
@@ -390,6 +395,7 @@ export default function AdminDashboard() {
                {activeTab === "sales" && <SalesTab purchases={purchases} onDownload={handleDownloadCSV} />}
                {activeTab === "manuals" && <ManualsTab manuals={manuals} refresh={fetchManuals} editingId={editingId} setEditingId={setEditingId} />}
                {activeTab === "staff" && <StaffTab staff={staff} refresh={fetchStaff} />}
+                {activeTab === "scanner" && <StaffScanner />}
             </div>
           )}
         </section>

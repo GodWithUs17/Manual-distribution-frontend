@@ -55,7 +55,7 @@ export default function Footer() {
             
             {/* WHATSAPP BUTTON */}
             <a 
-              href="https://wa.me/2348123456789?text=Hello%20APH%20Support,%20I%20have%20a%20question%20about%20my%20manual%20purchase."
+              href="https://wa.me/2349022266417?text=Hello%20APH%20Support,%20I%20have%20a%20question%20about%20my%20manual%20purchase."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-lautech-gold/10 hover:bg-lautech-gold/20 text-lautech-gold border border-lautech-gold/30 px-4 py-2 rounded-xl text-xs font-bold transition-all"

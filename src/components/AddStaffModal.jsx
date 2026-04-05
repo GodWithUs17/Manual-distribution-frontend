@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "../api/axios";
 import { X, UserPlus, Loader2 } from "lucide-react";
 
 export default function AddStaffModal({ isOpen, onClose, onRefresh }) {
@@ -15,7 +15,7 @@ export default function AddStaffModal({ isOpen, onClose, onRefresh }) {
     setError("");
 
     try {
-      await axios.post("http://localhost:5000/api/admin/staff/create", formData);
+      await API.post("/admin/staff/create", formData);
       setFormData({ name: "", email: "", password: "" }); // Reset form
       onRefresh(); // Reload the staff list in the background
       onClose();   // Close modal

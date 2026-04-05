@@ -7,6 +7,7 @@ export default function Checkout() {
   const { manualId } = useParams();
   const navigate = useNavigate();
 
+  const [inputError, setInputError] = useState("");
   const [manual, setManual] = useState(null);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false); 
@@ -49,7 +50,22 @@ export default function Checkout() {
 
   const handleChange = (e) => {
     setErrorMessage("");
+    setInputError("");
     const { name, value } = e.target;
+
+    if (name === "matricNo") {
+    // Check for non-numeric characters
+    if (value !== "" && !/^\d+$/.test(value)) {
+      setInputError("Matric Number must contain only digits.");
+      return; 
+    }
+
+    // Check for length (using 12 as the standard LAUTECH length)
+    if (value.length > 12) {
+      setInputError("Matric Number cannot exceed 12 digits.");
+      return;
+    }
+  }
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -263,13 +279,22 @@ export default function Checkout() {
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-[#a16207] uppercase ml-1 tracking-[0.2em]">Matric No.</label>
                 <input 
-                  name="matricNo" 
+                  name="matricNo"
+                  inputMode="numeric" 
                   value={form.matricNo} 
                   onChange={handleChange} 
                   disabled={loading || verifying}
-                  className="w-full bg-[#fdfcf7] border border-[#a16207]/5 p-5 rounded-2xl outline-none font-bold text-sm shadow-inner disabled:opacity-40" 
+                  className={`w-full bg-[#fdfcf7] border ${inputError ? 'border-red-500 ring-1 ring-red-500' : 'border-[#a16207]/5'} p-5 rounded-2xl outline-none font-bold text-sm shadow-inner disabled:opacity-40 transition-all`}
+                  placeholder="e.g. 20230123456" 
                   required 
                 />
+
+                {/* Inline Error Message */}
+                   {inputError && (
+                     <p className="text-[9px] font-black text-red-600 uppercase tracking-tight ml-2 mt-1 animate-pulse">
+                       ⚠️ {inputError}
+                     </p>
+                   )}
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-[#a16207] uppercase ml-1 tracking-[0.2em]">Level</label>

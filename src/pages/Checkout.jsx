@@ -101,21 +101,23 @@ export default function Checkout() {
       
       const backendRef = res.data.purchase.transactionRef;
       const pKey = (import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || "").trim();
+
+      let paymentCompleted = false;
       
       const paystackArgs = {
         key: pKey,           
-        email: payload.email,
+        email: payload.email, 
         amount: Math.round(Number(manual.price) * 100),
         reference: backendRef, 
         callback: (response) => {
           setVerifying(true); 
           handleVerification(response, backendRef);
         },
-        onClose: () => {
-          if (!verifying) {
-            setLoading(false);
-            setErrorMessage("Transaction cancelled.");
-          }
+         onClose: () => {
+           if (!paymentCompleted) {
+             setLoading(false);
+             setErrorMessage("Transaction cancelled.");
+           }
         },
       };
 
@@ -136,13 +138,16 @@ export default function Checkout() {
         internalRef: internalRef 
       });
 
+      setLoading(false);
+      setVerifying(false);
+
       navigate("/Receipt", { 
         state: { 
           matricNo: form.matricNo, 
           reference: paystackResponse.reference 
         } 
       });
-    } catch (err) {
+    } catch (err) {   
       setErrorMessage("Payment confirmed but verification failed. Contact Admin.");
       setLoading(false);
       setVerifying(false);

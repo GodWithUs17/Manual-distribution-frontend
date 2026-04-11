@@ -82,55 +82,89 @@ export default function Checkout() {
     setShowReview(true); 
   };
 
+  // const confirmAndPay = async () => {
+  //   setShowReview(false);
+  //   setLoading(true); 
+
+  //   try {
+  //     // CLEAN PAYLOAD: Ensures types match Backend/Prisma expectations
+  //     const payload = {
+  //       fullName: form.fullName.trim(),
+  //       email: form.email.trim(),
+  //       matricNo: form.matricNo.trim(),
+  //       department: form.department,
+  //       level: parseInt(form.level, 10), // Convert to Int
+  //       manualId: Number(manualId)       // Convert to Int
+  //     };
+
+  //     const res = await API.post("/purchases/initialize", payload);
+      
+  //     const backendRef = res.data.purchase.transactionRef;
+  //     const pKey = (import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || "").trim();
+
+  //     let paymentCompleted = false;
+      
+  //     const paystackArgs = {
+  //       key: pKey,           
+  //       email: payload.email, 
+  //       amount: Math.round(Number(manual.price) * 100),
+  //       reference: backendRef, 
+  //       callback: (response) => {
+  //         paymentCompleted = true;
+  //         setVerifying(true); 
+  //         handleVerification(response, backendRef);
+  //       },
+  //        onClose: () => { 
+  //          if (!paymentCompleted) {
+  //            setLoading(false);
+  //            setErrorMessage("Transaction cancelled.");
+  //          }
+  //       },
+  //     };
+
+  //     const handler = window.PaystackPop.setup(paystackArgs);
+  //     handler.openIframe();
+
+  //   } catch (err) {
+  //     const msg = err.response?.data?.error || err.response?.data?.details || "Connection error";
+  //     setErrorMessage(msg);
+  //     setLoading(false);
+  //   }
+  // };
+
   const confirmAndPay = async () => {
-    setShowReview(false);
-    setLoading(true); 
+  setShowReview(false);
+  setLoading(true);
 
-    try {
-      // CLEAN PAYLOAD: Ensures types match Backend/Prisma expectations
-      const payload = {
-        fullName: form.fullName.trim(),
-        email: form.email.trim(),
-        matricNo: form.matricNo.trim(),
-        department: form.department,
-        level: parseInt(form.level, 10), // Convert to Int
-        manualId: Number(manualId)       // Convert to Int
-      };
+  try {
+    const payload = {
+      fullName: form.fullName.trim(),
+      email: form.email.trim(),
+      matricNo: form.matricNo.trim(),
+      department: form.department,
+      level: parseInt(form.level, 10),
+      manualId: Number(manualId)
+    };
 
-      const res = await API.post("/purchases/initialize", payload);
-      
-      const backendRef = res.data.purchase.transactionRef;
-      const pKey = (import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || "").trim();
+    // 1. Initialize on backend
+    const res = await API.post("/purchases/initialize", payload);
+    
+    // 2. Extract the authorization_url Paystack gave your backend
+    const authUrl = res.data.purchase.authorization_url;
 
-      let paymentCompleted = false;
-      
-      const paystackArgs = {
-        key: pKey,           
-        email: payload.email, 
-        amount: Math.round(Number(manual.price) * 100),
-        reference: backendRef, 
-        callback: (response) => {
-          paymentCompleted = true;
-          setVerifying(true); 
-          handleVerification(response, backendRef);
-        },
-         onClose: () => { 
-           if (!paymentCompleted) {
-             setLoading(false);
-             setErrorMessage("Transaction cancelled.");
-           }
-        },
-      };
-
-      const handler = window.PaystackPop.setup(paystackArgs);
-      handler.openIframe();
-
-    } catch (err) {
-      const msg = err.response?.data?.error || err.response?.data?.details || "Connection error";
-      setErrorMessage(msg);
-      setLoading(false);
+    if (authUrl) {
+      // 3. Go to Paystack page (This fixes the Chrome mobile issue)
+      window.location.href = authUrl;
+    } else {
+      throw new Error("Payment link generation failed");
     }
-  };
+
+  } catch (err) {
+    const msg = err.response?.data?.error || "Connection error";
+    setErrorMessage(msg);
+    setLoading(false);
+  }
+};
 
   const handleVerification = async (paystackResponse, internalRef) => {
     try {

@@ -15,6 +15,7 @@ import AdminDashboard from "./layouts/AdminDashboard";
 import StaffScanner from "./layouts/StaffScanner";
 import { Toaster } from 'react-hot-toast';
 import Unauthorized from "./contexts/unauthorized";
+import VerifyPayment from "./pages/VerifyPayment";
 
 
 
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/manuals" element={<Manuals />} />
         <Route path="/checkout/:manualId" element={<Checkout />} />
         <Route path="/receipt" element={<Receipt />} />
+        <Route path="/verify-payment" element={<VerifyPayment />} />
 
         <Route 
           path="/admin" 

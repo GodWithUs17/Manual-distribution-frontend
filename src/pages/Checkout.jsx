@@ -110,10 +110,11 @@ export default function Checkout() {
         amount: Math.round(Number(manual.price) * 100),
         reference: backendRef, 
         callback: (response) => {
+          paymentCompleted = true;
           setVerifying(true); 
           handleVerification(response, backendRef);
         },
-         onClose: () => {
+         onClose: () => { 
            if (!paymentCompleted) {
              setLoading(false);
              setErrorMessage("Transaction cancelled.");

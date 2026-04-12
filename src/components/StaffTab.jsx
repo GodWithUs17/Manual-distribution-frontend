@@ -97,31 +97,6 @@ export default function StaffTab({ staff, refresh }) {
   }
 };
 
-  // const handleDeleteUser = async (userId) => {
-  //   const result = await Swal.fire({
-  //     title: "Permanent Removal?",
-  //     text: "This action cannot be undone. The staff profile will be purged.",
-  //     icon: "error",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#d33",
-  //     confirmButtonText: "Delete Permanently",
-  //     background: "#fdfcf7",
-  //     color: "#450a0a"
-  //   });
-
-  //   if (result.isConfirmed) {
-  //     const token = localStorage.getItem("token");
-  //     try {
-  //       await axios.delete(`http://localhost:5000/api/admin/staff/${userId}`, {
-  //         headers: { Authorization: `Bearer ${token}` }
-  //       });
-  //       toast.success("Staff profile deleted");
-  //       refresh();
-  //     } catch (err) {
-  //       toast.error("Deletion failed.");
-  //     }
-  //   }
-  // };
 
   const handleDeleteUser = async (userId) => {
   if (userId === currentUser?.id) {

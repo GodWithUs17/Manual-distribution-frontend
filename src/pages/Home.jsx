@@ -26,11 +26,6 @@ export default function Home() {
     fetchManuals();
   }, []);
 
-  // // 2. Filter logic: Matches title or courseCode
-  // const filteredManuals = manuals.filter((manual) =>
-  //   manual.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //   manual.courseCode?.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
 
   const filteredManuals = manuals.filter((manual) => {
   const matchesSearch = manual.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

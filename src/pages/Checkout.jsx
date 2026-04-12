@@ -150,7 +150,7 @@ export default function Checkout() {
     const res = await API.post("/purchases/initialize", payload);
     
     // 2. Extract the authorization_url Paystack gave your backend
-    const authUrl = res.data.purchase.authorization_url;
+    const authUrl = res.data.authorization_url;
 
     if (authUrl) {
       // 3. Go to Paystack page (This fixes the Chrome mobile issue)
@@ -166,28 +166,28 @@ export default function Checkout() {
   }
 };
 
-  const handleVerification = async (paystackResponse, internalRef) => {
-    try {
-      await API.post("/purchases/verify", {
-        reference: paystackResponse.reference,
-        internalRef: internalRef 
-      });
+  // const handleVerification = async (paystackResponse, internalRef) => {
+  //   try {
+  //     await API.post("/purchases/verify", {
+  //       reference: paystackResponse.reference,
+  //       internalRef: internalRef 
+  //     });
 
-      setLoading(false);
-      setVerifying(false);
+  //     setLoading(false);
+  //     setVerifying(false);
 
-      navigate("/Receipt", { 
-        state: { 
-          matricNo: form.matricNo, 
-          reference: paystackResponse.reference 
-        } 
-      });
-    } catch (err) {   
-      setErrorMessage("Payment confirmed but verification failed. Contact Admin.");
-      setLoading(false);
-      setVerifying(false);
-    }
-  };
+  //     navigate("/Receipt", { 
+  //       state: { 
+  //         matricNo: form.matricNo, 
+  //         reference: paystackResponse.reference 
+  //       } 
+  //     });
+  //   } catch (err) {   
+  //     setErrorMessage("Payment confirmed but verification failed. Contact Admin.");
+  //     setLoading(false);
+  //     setVerifying(false);
+  //   }
+  // };
 
   if (!manual) return (
     <div className="min-h-screen flex items-center justify-center bg-[#fdfcf7]">

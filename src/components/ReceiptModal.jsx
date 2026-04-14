@@ -8,34 +8,78 @@ const ReceiptModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleDownload = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await axios({
-        url: `${import.meta.env.VITE_API_URL}/purchases/download-receipt`,
-        method: 'GET',
-        params: { 
-          matricNo: matricNo.trim(), 
-          courseCode: courseCode.trim() 
-        },
-        responseType: 'blob',
-      });
+//   const handleDownload = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+//     try {
+//       const response = await axios({
+//         url: `${import.meta.env.VITE_API_URL}/purchases/download-receipt`,
+//         method: 'GET',
+//         params: { 
+//           matricNo: matricNo.trim(), 
+//           courseCode: courseCode.trim() 
+//         },
+//         responseType: 'blob',
+//       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${courseCode}_Receipt.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      onClose(); // Close modal after success
-    } catch (err) {
-      alert("No paid record found. Check your details.");
-    } finally {
-      setLoading(false);
+//       const url = window.URL.createObjectURL(new Blob([response.data]));
+//       const link = document.createElement('a');
+//       link.href = url;
+//       link.setAttribute('download', `${courseCode}_Receipt.pdf`);
+//       document.body.appendChild(link);
+//       link.click();
+//       link.remove();
+//       onClose(); // Close modal after success
+//     } catch (err) {
+//       alert("No paid record found. Check your details.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+const handleDownload = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    // 1. Clean the input: Remove extra spaces and make it Uppercase
+    let cleanCourseCode = courseCode.trim().toUpperCase();
+
+    // 2. Add a space if they forgot it (e.g., "ANB301" becomes "ANB 301")
+    // This looks for where letters end and numbers begin
+    if (!cleanCourseCode.includes(' ')) {
+      cleanCourseCode = cleanCourseCode.replace(/([A-Z]+)(\d+)/, '$1 $2');
     }
-  };
+
+    const response = await axios({
+      url: `${import.meta.env.VITE_API_URL}/purchases/download-receipt`,
+      method: 'GET',
+      params: { 
+        matricNo: matricNo.trim(), 
+        courseCode: cleanCourseCode // Send the formatted code
+      },
+      responseType: 'blob',
+    });
+
+    // 3. Create the file download link
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${cleanCourseCode}_Receipt.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    
+    // 4. Cleanup
+    window.URL.revokeObjectURL(url);
+    onClose(); 
+  } catch (err) {
+    console.error("Download Error:", err);
+    alert("No paid record found. Please ensure your Matric No and Course Code (e.g., ANB 301) are correct.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
